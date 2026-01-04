@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | GDG AI</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- OCR Library -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+
+<header>
+  <h2>AI Quiz Generator</h2>
+  <button onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+
+  <h3>Upload Study Material or Paste Text</h3>
+
+  <div class="input-choice">
+    <label>
+      <input type="radio" name="inputType" value="file" checked> Upload Image
+    </label>
+    <label>
+      <input type="radio" name="inputType" value="text"> Paste Text
+    </label>
+  </div>
+
+  <div id="fileSection">
+    <input type="file" id="fileInput" accept="image/*" />
+  </div>
+
+  <div id="textSection" style="display:none;">
+    <textarea id="manualText" placeholder="Paste your text here..."></textarea>
+  </div>
+
+  <button onclick="generateQuiz()">Generate Quiz</button>
+
+  <div id="output"></div>
+
+</div>
+
+<script type="module" src="auth.js"></script>
+<script src="ai.js"></script>
+
+<script>
+  const fileSection = document.getElementById("fileSection");
+  const textSection = document.getElementById("textSection");
+
+  document.querySelectorAll('input[name="inputType"]').forEach(radio => {
+    radio.addEventListener("change", () => {
+      fileSection.style.display = radio.value === "file" ? "block" : "none";
+      textSection.style.display = radio.value === "text" ? "block" : "none";
+    });
+  });
+
+  async function generateQuiz() {
+    const output = document.getElementById("output");
+    const inputType = document.querySelector('input[name="inputType"]:checked').value;
+
+    let finalText = "";
+
+    if (inputType === "text") {
+      finalText = document.getElementById("manualText").value.trim();
+      if (!finalText) {
+        output.innerHTML = "❌ Please paste some text";
+        return;
+      }
+    } 
+    else {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) {
+        output.innerHTML = "❌ Please upload an image";
+        return;
+      }
+
+      output.innerHTML = "🔍 Extracting text from image...";
+      const { data: { text } } = await Tesseract.recognize(file, "eng");
+      finalText = text;
+    }
+
+    // 🔥 Call AI
+    generateAIQuiz(finalText);
+  }
+</script>
+
+</body>
+</html>
+
