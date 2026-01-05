@@ -66,8 +66,9 @@ app.get("/", (req, res) => {
   res.send("Quiz Generator! 🚀");
 });
 
-const PORT = process.env.PORT || 5000;
+// Changed port to 5000
+const PORT = 5000;
 app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+  console.log(`🚀 Server: http://localhost:${PORT}`);
+  console.log("✅ Gemini 2.5 Flash ready!");
 });
-

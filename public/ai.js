@@ -3,7 +3,7 @@ async function generateAIQuiz(content) {
   output.innerHTML = "⏳ Generating quiz using AI...";
 
   try {
-    const response = await fetch("https://ai-quiz-zltb.onrender.com/generate-quiz", {
+    const response = await fetch("http://localhost:5000/generate-quiz", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
